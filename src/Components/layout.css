@@ -1,0 +1,29 @@
+.dashingboard-outer {
+  min-height: 100vh;
+}
+
+.side-dash {
+  width: 18%;
+  background-color: var(--white-color);
+  box-shadow: 2px 0 10px var(--shadow-color);
+  transition: all 0.3s ease;
+  border: 0px;
+}
+.main-dash-content {
+  background-color: var(--second-color);
+}
+
+.top-nav {
+  background-color: var(--white-color);
+  padding: 10px;
+  box-shadow: 0 2px 10px var(--shadow-color);
+  height: 60px;
+}
+
+.main-content-arena {
+  padding: 2rem;
+}
+span.side-nav-icon {
+    padding-right: 15px;
+    padding-bottom: 2px;
+}

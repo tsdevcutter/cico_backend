@@ -77,6 +77,8 @@ function Employees() {
 
     try {
  
+      console.log(postData);
+      
         setProcessing(true);
         const resData = await axios.post(CONSTANTS.API_URL + 'auth/register/v1', postData, {
                     headers: {
@@ -84,11 +86,11 @@ function Employees() {
                     },
                   }
                 );      
-                console.log(resData);
-        
+       
           toast.success(resData.data.message);
         
         setProcessing(false);
+        
         setFormData({
               firstName: '',
               lastName: '',
@@ -99,7 +101,8 @@ function Employees() {
               jobTitle: '',
               phone: '',
           })
-        setUsersUpdate(prev => prev + 1);
+       setUsersUpdate(prev => prev + 1);
+        
     } catch (error) {
       toast.error("Failed to create Employee");
       setProcessing(false);
@@ -232,8 +235,7 @@ function Employees() {
                       <button className="btn btn-main" disabled={processing}>
                         Submit
                       </button>
-                    </div>
-                    
+                    </div>                    
                   </form>
               </div>
           </ModalPopUp>

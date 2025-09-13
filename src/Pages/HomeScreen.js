@@ -2,7 +2,12 @@ import React from 'react'
 
 function HomeScreen() {
   return (
-    <div>HomeScreen</div>
+    <div className="card-container">
+      <div className="card">
+        HomeScreen
+
+      </div>
+    </div>
   )
 }
 

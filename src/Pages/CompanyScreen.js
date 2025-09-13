@@ -2,7 +2,9 @@ import React from 'react'
 
 function CompanyScreen() {
   return (
-    <div>CompanyScreen</div>
+    <div>CompanyScreen
+      
+    </div>
   )
 }
 

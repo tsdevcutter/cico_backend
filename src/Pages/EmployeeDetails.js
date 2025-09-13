@@ -130,6 +130,10 @@ function EmployeeDetails() {
                           <td>Gender:</td>
                           <td>{currentUser.gender}</td>
                         </tr>
+                        <tr>
+                            <td>Company Number:</td>
+                            <td>{user.companynumber}</td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>

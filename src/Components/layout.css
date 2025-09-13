@@ -8,9 +8,11 @@
   box-shadow: 2px 0 10px var(--shadow-color);
   transition: all 0.3s ease;
   border: 0px;
+  position: relative;
 }
 .main-dash-content {
   background-color: var(--second-color);
+  width: 82%;
 }
 
 .top-nav {
@@ -26,4 +28,28 @@
 span.side-nav-icon {
     padding-right: 15px;
     padding-bottom: 2px;
+}
+.left-open {
+    width: 70%;
+    padding:4px;
+}
+.right-open {
+  width: 30%;
+  display: flex;
+  justify-content: end;
+  padding: 4px;
+}
+a.nav-link-pact {
+    display: block;
+    position: relative;
+}
+.user-image {
+    margin-right: 20px;
+    background: #f1f1f1;
+    padding: 6px 12px 10px 13px;
+    margin-top: -3px;
+    border-radius: 50%;
+}
+.profile-quick {
+  display: flex;
 }

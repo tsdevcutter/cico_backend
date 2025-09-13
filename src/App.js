@@ -13,6 +13,7 @@ import EmployeeDetails from "./Pages/EmployeeDetails";
 import CalendarSreen from "./Pages/CalendarSreen";
 import FlightsScreen from "./Pages/FlightsScreen";
 import ForgotPassword from "./Pages/ForgotPassword";
+import ProfileScreen from "./Pages/ProfileScreen";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
                  <Route path="/employee/:id" element={<EmployeeDetails/>}/>
                  <Route path="/calendar" element={<CalendarSreen/>}/>  
                  <Route path="/flights" element={<FlightsScreen/>}/>  
+                 <Route path="/profile" element={<ProfileScreen/>}/>  
              </Route>
           </Routes>
         </div>

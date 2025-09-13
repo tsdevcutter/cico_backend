@@ -62,6 +62,7 @@ function CalendarSreen() {
             console.log(err);
         }
     }
+    
     const collectCompanyUserList = async () => {
       try{
           setCULoading(true);
@@ -90,8 +91,6 @@ function CalendarSreen() {
         ...formData,
         companynumber:user.companynumber
        };
-
-       console.log(user.companynumber);
        
        const startDate = new Date(formData.startDate);
        const endDate = new Date(formData.endDate);

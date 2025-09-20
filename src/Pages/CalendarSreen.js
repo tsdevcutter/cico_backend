@@ -78,12 +78,13 @@ function CalendarSreen() {
         console.log(err);
         setCULoading(false);
       }
-    }
-    const handleChange = (e) => {
+  }
+  
+  const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+  };
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
       e.preventDefault();
       try{
 
@@ -121,9 +122,9 @@ function CalendarSreen() {
         toast.error("Something went wrong, please try again later.")
         setProcessing(false);
       }
-    }
+  }
 
-    const formatProjects = (projects) => {
+   const formatProjects = (projects) => {
       return projects.map(project => ({
         id: project._id,
         title: project.title,
@@ -132,13 +133,12 @@ function CalendarSreen() {
         backgroundColor: getRandomDarkColor(),
         borderColor: getRandomDarkColor(),
       }));
-    };
+   };
 
-    const handleDateSelect = (selectInfo) => {
+  const handleDateSelect = (selectInfo) => {
         
       const filteredProjects = newProjects.filter(event => event.startDate === selectInfo.startStr);
 
-      //console.log(filteredProjects);
       if(filteredProjects.length > 0){
           setShowProModalAdd(true);
           const current = projectList.filter(selected => selected._id === filteredProjects[0].id);

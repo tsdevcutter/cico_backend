@@ -14,6 +14,8 @@ import CalendarSreen from "./Pages/CalendarSreen";
 import FlightsScreen from "./Pages/FlightsScreen";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ProfileScreen from "./Pages/ProfileScreen";
+import ProjectScreen from "./Pages/ProjectScreen";
+import ProjectDetails from "./Pages/ProjectDetails";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
                  <Route path="/employee/:id" element={<EmployeeDetails/>}/>
                  <Route path="/calendar" element={<CalendarSreen/>}/>  
                  <Route path="/flights" element={<FlightsScreen/>}/>  
+                 <Route path="/projects" element={<ProjectScreen /> } />
+                 <Route path="/project-details/:id" element={<ProjectDetails /> } />
                  <Route path="/profile" element={<ProfileScreen/>}/>  
              </Route>
           </Routes>

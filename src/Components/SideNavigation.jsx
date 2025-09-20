@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaCalendar, FaCogs, FaHome, FaPlane, FaUserAlt } from "react-icons/fa";
+import { FaCalendar, FaCogs, FaHome, FaPlane, FaUserAlt, FaFile } from "react-icons/fa";
 import './layout.css';
 import { Link } from 'react-router-dom';
 
@@ -26,7 +26,15 @@ function SideNavigation() {
              <span className="side-nav-text">Employees </span>
           </Link>
         </li>
-         <li className="nav-item mb-2">
+        <li className="nav-item mb-2">
+          <Link to="/projects" className="nav-link ">           
+            <span className="side-nav-icon">
+              <FaFile />
+            </span>
+            <span className="side-nav-text">Projects</span>
+          </Link>
+        </li>
+        <li className="nav-item mb-2">
           <Link to="/calendar" className="nav-link ">           
             <span className="side-nav-icon">
               <FaCalendar />

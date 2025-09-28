@@ -74,7 +74,6 @@ function ProjectScreen() {
      const collectCurrentUserProject = async () => {
             
         try{
-            console.log(user.companynumber);
 
             const results = await axios.get(CONSTANTS.API_URL +"settings/company/v1/project/"+ user.companynumber, {
                         headers: {
@@ -82,12 +81,10 @@ function ProjectScreen() {
                         },
                     });
 
-                    console.log(results.data.response);
-                                
+                               
                     if(results.data.notempty){
                         setEvents(results.data.response);
                     }
-                
         }catch(err){
             console.log(err);
         }
@@ -205,38 +202,38 @@ function ProjectScreen() {
                   </form>
               </div>
           </ModalPopUp>
-        {
-                    events.length > 0 && (
-                        <table className="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>NO</th>
-                                    <th>Title</th>
-                                    <th>Start</th>
-                                    <th>End</th>
-                                    <th>Users</th>
-                                    <th>#</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    events.map((project, index) => {
-                                        return <tr key={index}>
-                                                    <td>{index + 1}</td>  
-                                                    <td>{project.title}</td>   
-                                                    <td>{formatDateToDDMMYYYY(project.startDate)}</td>   
-                                                    <td>{formatDateToDDMMYYYY(project.endDate)}</td>    
-                                                    <td>{project.users.length}</td>     
-                                                    <td>
-                                                        <Link to={"/project-details/" + project._id}>View</Link>
-                                                    </td>   
-                                                </tr>
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                    )
-                }
+          {
+                events.length > 0 && (
+                    <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>Title</th>
+                                <th>Start</th>
+                                <th>End</th>
+                                <th>Users</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                events.map((project, index) => {
+                                    return <tr key={index}>
+                                                <td>{index + 1}</td>  
+                                                <td>{project.title}</td>   
+                                                <td>{formatDateToDDMMYYYY(project.startDate)}</td>   
+                                                <td>{formatDateToDDMMYYYY(project.endDate)}</td>    
+                                                <td>{project.users.length}</td>     
+                                                <td>
+                                                    <Link to={"/project-details/" + project._id}>View</Link>
+                                                </td>   
+                                            </tr>
+                                })
+                            }
+                        </tbody>
+                    </table>
+                )
+            }
       </div>
     </div>
   )

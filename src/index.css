@@ -346,6 +346,77 @@ button.btn.btn-project-standard.btn-included{
   background-color: var(--light-gray-color);
   padding: 10px;
 }
+
+.nav-sides-set {
+    width: 18%;
+    background-color: var(--second-color);
+    font-weight: 600;
+}
+.nav-sides-set ul li button {
+  width: 100%;
+  color: var( --accent-color);
+  border: 1px solid #ead3ea;
+}
+button.nav-link.active {
+  background-color: var(--black-color);
+  color: var(--white-color);
+}
+.nav-sides-set .nav-item {
+  width: 100%;
+  margin-bottom: 1px;
+     
+}
+.body-sides-set {
+    width: 83%;
+    padding: 10px 20px;
+}
+.row-blow {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+button.btn.btn-stripe-activefalse {
+    border: 3px solid var(--accent-color);
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+button.btn.btn-stripe-activetrue {
+    border: 3px solid var(--default-color);
+    color: var(--default-color);
+    font-weight: 600;
+}
+
+.table {
+  font-size: 12px;
+}
+.status-pt {
+    font-size: 11px;
+    padding: 7px;
+    text-align: center;
+    margin-bottom: 0px;
+}
+.float-right {
+    float: right;
+}
+.show-alert-success {
+    background: #7dd89d;
+    color: #025a0d;
+    padding: 10px;
+    width: 130px;
+    border-radius: 5px;
+    text-align: center;
+}
+.show-alert-danger {
+    background: #d8887d;
+    color: #5a0c02;
+    padding: 10px;
+    width: 130px;
+    border-radius: 5px;
+    text-align: center;
+}
+.space-bet {
+  justify-content: space-between;
+}
 @media screen and (max-width: 768px) {
     span.side-nav-text {
       display: none;

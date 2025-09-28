@@ -147,7 +147,8 @@ function ProjectDetails() {
                                 <div className="section-part">
                                     <h5>Users</h5>
                                     <div className="row">
-                                        <div className="user-modal-list">
+                                        <div className="col-md-8">
+                                          <div className="user-modal-list">
                                             {cULoading && 'loading...'}
                                             {
                                                 companyUsers.length > 0 && (
@@ -171,7 +172,18 @@ function ProjectDetails() {
                                                 </div>
                                                 )
                                             }
-                                            </div>
+                                        </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                           <div className="user-check">
+                                              <h4>Search</h4>
+                                              <p>Search for the user you want to add</p>
+                                              <div className="search-box">
+                                                <input type="text" className="form-control" placeholder="Search by EmpNo, Name" />
+                                                <button className="btn btn-main mt-3">Search</button>
+                                              </div>
+                                           </div>
+                                        </div>
                                     </div>
                                 </div>
                           </div>

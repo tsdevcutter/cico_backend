@@ -16,6 +16,7 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import ProfileScreen from "./Pages/ProfileScreen";
 import ProjectScreen from "./Pages/ProjectScreen";
 import ProjectDetails from "./Pages/ProjectDetails";
+import SettingsScreen from "./Pages/SettingsScreen";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
                  <Route path="/projects" element={<ProjectScreen /> } />
                  <Route path="/project-details/:id" element={<ProjectDetails /> } />
                  <Route path="/profile" element={<ProfileScreen/>}/>  
+                 <Route path="/settings" element={<SettingsScreen/>}/>  
              </Route>
           </Routes>
         </div>

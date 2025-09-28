@@ -14,10 +14,11 @@ function Employees() {
         lastName: '',
         idNumber: '',
         email: '',
-        gender: '',
         dateOfBirth: '',
         jobTitle: '',
         phone: '',
+        gender: 'Male',
+        role: 'business'
     });
 
   const [usersUpdate, setUsersUpdate]                                       = useState(0);
@@ -47,9 +48,10 @@ function Employees() {
   }, [page, limit, usersUpdate])
 
   const collectListOfUsers = async () => {
-    try{
+    try
+      {
       
-      const results = await axios.get(CONSTANTS.API_URL +"users/employee-list?page=" + page + "&limit=" + limit, {
+        const results = await axios.get(CONSTANTS.API_URL +"users/employee-list?page=" + page + "&limit=" + limit + "&comp=" + user.companynumber, {
               headers: {
                 token: 'Bearer ' + user.accessToken,
               },
@@ -77,18 +79,15 @@ function Employees() {
 
     try {
  
-      console.log(postData);
-      
         setProcessing(true);
-        const resData = await axios.post(CONSTANTS.API_URL + 'auth/register/v1', postData, {
+          const resData = await axios.post(CONSTANTS.API_URL + 'auth/register/v2', postData, {
                     headers: {
                       token: 'Bearer ' + user.accessToken,
                     },
                   }
                 );      
        
-          toast.success(resData.data.message);
-        
+        toast.success(resData.data.message);
         setProcessing(false);
         
         setFormData({
@@ -96,9 +95,10 @@ function Employees() {
               lastName: '',
               idNumber: '',
               email: '',
-              gender: '',
+              role: 'business',
               dateOfBirth: '',
               jobTitle: '',
+              gender: 'Male',
               phone: '',
           })
        setUsersUpdate(prev => prev + 1);

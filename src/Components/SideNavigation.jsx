@@ -3,7 +3,9 @@ import { FaCalendar, FaCogs, FaHome, FaPlane, FaUserAlt, FaFile } from "react-ic
 import './layout.css';
 import { Link } from 'react-router-dom';
 
-function SideNavigation() {
+function SideNavigation({member}) {
+     ///console.log("SideNavigation"  );
+    //console.log(member);
   return (
     <div className="navigation-side">
       <div className="center-heading fs-5 fw-bold mb-4 text-center">
@@ -50,14 +52,19 @@ function SideNavigation() {
             <span className="side-nav-text">Flights</span>
           </Link>
         </li>
-        <li className="nav-item mb-2">
-          <Link to="#" className="nav-link ">           
-            <span className="side-nav-icon">
-              <FaCogs />
-            </span>
-            <span className="side-nav-text">Settings</span>
-          </Link>
-        </li>
+        {
+          member.role.includes('super') && (
+            <li className="nav-item mb-2">
+              <Link to="/settings" className="nav-link ">           
+                <span className="side-nav-icon">
+                  <FaCogs />
+                </span>
+                <span className="side-nav-text">Settings</span>
+              </Link>
+            </li>
+          )
+        }
+        
       </ul>
     </div>
   )

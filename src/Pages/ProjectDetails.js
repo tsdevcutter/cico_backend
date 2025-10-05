@@ -11,16 +11,22 @@ function ProjectDetails() {
 
   const params                                                                    = useParams();
   
+  const [totalSearchable, setTotalSearchable]                                     = useState(0);
   const [currentProject, setCurrentProject]                                       = useState(null);
   const [userEmployeeNumbers, setUserEmployeeNumbers]                             = useState([]);
 
   const [companyUsers, setCompanyUsers]                                           = useState([]);
   const [cULoading, setCULoading]                                                 = useState(false);
 
+  const [searchUserList, setSearchUserList]                                       = useState([]);
+  const [searchUser, setSearchUser]                                               = useState("");
+  const [searchProcess, setSearchProcess]                                         = useState(false);
+
   const [processing, setProcessing]                                               = useState(false);
   
   useEffect(() => {
     collectCurrentProjectDetails();
+    getTotalUsersCount();
   },[])
 
   useEffect(() => {
@@ -48,19 +54,35 @@ function ProjectDetails() {
     }
   }
 
-  const collectCompanyUserList = async () => {
-      try{
-            setCULoading(true);
-          const results = await axios.get(CONSTANTS.API_URL +"users/company/short-list/" + user.companynumber, {
+  const getTotalUsersCount = async () => {
+    try{
+       const results = await axios.get(CONSTANTS.API_URL +"users/employees/options/" + user.companynumber, {
               headers: {
                 token: 'Bearer ' + user.accessToken,
               },
             });
-            console.log("____________");
-            console.log(results.data);
-            console.log("____________");
+            
+            if(results.data.total > 0){
+              setTotalSearchable(results.data.total);
+            }
+            
+    }catch(err) {
+      console.log(err)
+    }
+  }
+
+  const collectCompanyUserList = async () => {
+      try{
+            setCULoading(true);
+          const results = await axios.get(CONSTANTS.API_URL +"users/company/short-list/v2/project/" + currentProject._id, {
+              headers: {
+                token: 'Bearer ' + user.accessToken,
+              },
+            });
+
             setCULoading(false);
             setCompanyUsers(results.data);
+            
       }catch(err){
         console.log(err);
         setCULoading(false);
@@ -84,10 +106,10 @@ function ProjectDetails() {
     }
     const handleTogglePersonProject = async (empNumber) => {
     
-    const newObject = {
-        "projectId"   : currentProject._id,
-        "empnumber" : empNumber
-      }
+        const newObject = {
+            "projectId"   : currentProject._id,
+            "empnumber" : empNumber
+          }
 
       try{
         
@@ -102,9 +124,41 @@ function ProjectDetails() {
         setCurrentProject(results.data.newProject)
         setProcessing(false);
 
+        setSearchUserList([]);
+        setSearchUser("");
       }catch(err){
         console.log(err);
+         setProcessing(false);
       }
+  }
+
+  const handleSearchFromInput = async () => {
+    try{
+
+        if(searchUser.length > 2){
+          setSearchProcess(true);
+
+          const newObject = {
+            "search"  : searchUser,
+            "companynumber" : user.companynumber
+          }
+          console.log(newObject);
+
+          const results = await axios.put(CONSTANTS.API_URL +"users/short-list/v1/assigners", newObject, {
+              headers: {
+                token: 'Bearer ' + user.accessToken,
+              },
+            });
+
+            setSearchUserList(results.data);
+          setSearchProcess(false);
+        }else {
+          toast.warning("More than two characters are required for search.")
+        }
+    }catch(err){
+      console.log(err);
+      setSearchProcess(false);
+    }
   }
 
   return (
@@ -152,36 +206,63 @@ function ProjectDetails() {
                                             {cULoading && 'loading...'}
                                             {
                                                 companyUsers.length > 0 && (
-                                                <div className="scroll-list">
-                                                    {
-                                                    companyUsers.map((person, index) => {
-                                                        const isIncluded = currentProject.users?.includes(person.empnumber);
-                                                        return <div className="item-person" key={index}>
-                                                                    <button 
-                                                                    className={`btn btn-project-standard ${isIncluded ? "btn-included" : ""}`}
-                                                                    onClick={() => handleTogglePersonProject(person.empnumber)}>
-                                                                    <strong>{person.empnumber}</strong>  
-                                                                    <div className="person-info">
-                                                                        <span>{person.name}</span>
-                                                                        <span>{person.surname}</span>
-                                                                    </div>
-                                                                    </button>
-                                                                </div>
-                                                        })
-                                                    }
-                                                </div>
+                                                  <div className="scroll-list">
+                                                      {
+                                                      companyUsers.map((person, index) => {
+                                                          const isIncluded = currentProject.users?.includes(person.empnumber);
+                                                          return <div className="item-person" key={index}>
+                                                                      <button 
+                                                                      className={`btn btn-project-standard ${isIncluded ? "btn-included" : ""}`}
+                                                                      onClick={() => handleTogglePersonProject(person.empnumber)}>
+                                                                      <strong>{person.empnumber}</strong>  
+                                                                      <div className="person-info">
+                                                                          <span>{person.name}</span>
+                                                                          <span>{person.surname}</span>
+                                                                      </div>
+                                                                      </button>
+                                                                  </div>
+                                                          })
+                                                      }
+                                                  </div>
                                                 )
                                             }
                                         </div>
                                         </div>
                                         <div className="col-md-4">
                                            <div className="user-check">
-                                              <h4>Search</h4>
-                                              <p>Search for the user you want to add</p>
+                                              <h4>Search</h4> 
+                                              <p>Search from up to {totalSearchable} user to add to this project</p>
                                               <div className="search-box">
-                                                <input type="text" className="form-control" placeholder="Search by EmpNo, Name" />
-                                                <button className="btn btn-main mt-3">Search</button>
+                                                <input type="text" 
+                                                  className="form-control" 
+                                                  placeholder="Search by EmpNo, Name"
+                                                  onChange={(e) => setSearchUser(e.target.value)} 
+                                                  />
+                                                  {
+                                                searchUserList.length > 0 &&(
+                                                  <div className="auto-comps-block">
+                                                    {
+                                                      searchUserList.map((search, index) => {
+                                                        return <div className="person-item" key={index}
+                                                                onClick={() => handleTogglePersonProject(search.empnumber)}>
+                                                                  <span>{search.empnumber}</span>
+                                                                  <span>{search.name}</span>
+                                                                  <span>{search.surname}</span>
+                                                                </div>
+                                                      })
+                                                    }
+                                                  </div>
+                                                )
+                                              }
+                                                <button className="btn btn-main mt-3"
+                                                    onClick={handleSearchFromInput}
+                                                  >
+                                                  Search
+                                                </button>
+
                                               </div>
+
+                                              
                                            </div>
                                         </div>
                                     </div>

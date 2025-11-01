@@ -1,10 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import * as CONSTANTS from "../CONSTANTS";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ModalPopUp from '../Components/modals/ModalPopUp';
 import { toast } from 'react-toastify';
+import { logout } from '../reduxAuth/authSlice';
 
 function Employees() {
 
@@ -19,7 +20,7 @@ function Employees() {
         phone: '',
         gender: 'Male',
         role: 'business'
-    });
+  });
 
   const [usersUpdate, setUsersUpdate]                                       = useState(0);
   const [processing, setProcessing]                                         = useState(false);
@@ -31,6 +32,8 @@ function Employees() {
   const [page, setPage]                                               = useState(0);
   const [limit, setLimit]                                             = useState(30);
   const [maximumDate, setMaximumDate]                                 = useState();
+
+  const dispatch                                                      = useDispatch();
 
   useEffect(() => {
     const today = new Date();
@@ -61,6 +64,13 @@ function Employees() {
 
     }catch(err){
       console.log(err);
+      console.log("((((())))))");
+      console.log(err.status);
+
+      if(err.status === 403 && err.response.data === "Token is not valid!"){
+          console.log("log user out");
+           dispatch(logout());
+        }
     }
   }
 

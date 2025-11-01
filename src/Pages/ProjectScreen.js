@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import * as CONSTANTS from "../CONSTANTS";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ModalPopUp from '../Components/modals/ModalPopUp';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { logout } from '../reduxAuth/authSlice';
 
 function ProjectScreen() {
       const {user}                                                  = useSelector((state) => state.auth);
@@ -25,6 +26,8 @@ function ProjectScreen() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
     
+    const dispatch                                                      = useDispatch();
+
     const handleSubmit = async (e) => {
       e.preventDefault();
       try{

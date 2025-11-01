@@ -86,6 +86,9 @@ input.form-control, select.form-control, textarea.form-control {
 .flexme {
   display: flex;
 }
+.pd5 {
+  padding: 5px;
+}
 .pd10 {
   padding: 10px;
 }
@@ -245,7 +248,15 @@ h1, h2, h3, h4, h5, h6 {
 .flight-snip .bottom {
     font-size: 12px;
 }
+.src-flex {
+  display: flex;
+}
 
+.form-control.srch-size1 {
+  padding: 9px;
+  height: 49px;
+  margin-top: 13px;
+}
 
 .label-copy-g {
   color: gray;
@@ -417,6 +428,14 @@ button.btn.btn-stripe-activetrue {
 .space-bet {
   justify-content: space-between;
 }
+.card-part.btn-project-standard {
+  background: #f6f6f6;
+  padding: 14px;
+  border: 1px solid gainsboro;
+}
+.card-part.btn-project-standard.btn-included {
+  background: #eaf9e8;
+}
 @media screen and (max-width: 768px) {
     span.side-nav-text {
       display: none;
@@ -435,4 +454,26 @@ button.btn.btn-stripe-activetrue {
       border-radius: 50%;
   }
 
+}
+
+.clock-view-short {
+  border: 2px dotted gray;
+  padding: 5px;
+  width: 50%;
+  margin-left: 10px;
+}
+
+.user-modal-list.full-campus {
+  width: 80%;
+}
+.rule-view {
+  text-align: center;
+  font-size: 12px;
+}
+.rl-in {
+  font-weight: bold;
+  padding: 3px;
+}
+.rl-out {
+  font-weight: bold;
 }

@@ -14,11 +14,16 @@ function ProjectScreen() {
       const [events, setEvents]                                                  = useState([]);
       const [processing, setProcessing]                                          = useState(false);
 
+      const [projectUpdate, setProjectUpdate]                                    = useState(0);
+
       const [formData, setFormData]                                              = useState({
             title: '',
             description: '',
             startDate: '',
             endDate: '',
+            clockTimeStart: '',
+            clockTimeEnd: '',
+            clockable: true,
             address: ''
         });
 
@@ -27,6 +32,10 @@ function ProjectScreen() {
     };
     
     const dispatch                                                      = useDispatch();
+
+    useEffect(() => {
+      collectCurrentUserProject()
+    }, [projectUpdate]);
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -39,42 +48,43 @@ function ProjectScreen() {
             
             const startDate = new Date(formData.startDate);
             const endDate = new Date(formData.endDate);
-                if (endDate < startDate) {
+             if (endDate < startDate) {
                 // If the end date is before the start date, handle the error
                 toast.warning("The end date cannot be before the start date. Please select a valid date range.");
                 return; // Stop the function from proceeding
-                } 
-            
-                setProcessing(true);
-                const results = await axios.post(CONSTANTS.API_URL +"settings/create/v1/project", projectContent, {
+             } 
+                        
+              setProcessing(true);
+              const results = await axios.post(CONSTANTS.API_URL +"settings/create/v2/project", projectContent, {
                         headers: {
                             token: 'Bearer ' + user.accessToken,
                         },
                     });
                 
-                    toast.success(results.data.message);
-                    setProcessing(false);
+              toast.success(results.data.message);
+              setProcessing(false);
             
                     setFormData({
                         title: '',
                         description: '',
                         startDate: '',
                         endDate: '',
+                        clockTimeStart: '',
+                        clockTimeEnd: '',
+                        clockable: true,
                         address: ''
                     });
-
-            }catch(err){
+            setProjectUpdate(prev => prev + 1);
+        }catch(err){
                 console.log(err);
                 toast.error("Something went wrong, please try again later.")
                 setProcessing(false);
-            }
         }
+    }
 
-      useEffect(() => {
-        collectCurrentUserProject()
-      }, []);
 
-     const collectCurrentUserProject = async () => {
+
+    const collectCurrentUserProject = async () => {
             
         try{
 
@@ -93,6 +103,22 @@ function ProjectScreen() {
         }
     }
 
+    const handleChangeClocker = (e) => {
+        const { name, value } = e.target;
+
+        // Special handling for the 'clockable' radio buttons
+        let updatedValue = value;
+        if (name === 'clockable') {
+            // Convert the string value 'true' or 'false' to a boolean
+            updatedValue = value === 'true'; 
+        }
+
+        setFormData({
+            ...formData,
+            [name]: updatedValue,
+        });
+    };
+
     function formatDateToDDMMYYYY(dateString) {
         const date = new Date(dateString);
         const day = String(date.getDate()).padStart(2, '0');
@@ -108,6 +134,7 @@ function ProjectScreen() {
         
         return `${day} ${month} ${year}`;
     }
+
   return (
     <div className="card-container">
       <div className="card">
@@ -181,6 +208,67 @@ function ProjectScreen() {
                               />
                         </div>    
                       </div>
+                      <div className="col-md-6">
+                        <div className="form-group mb-3">
+                          <div className="label-small">Clock in Times*</div>
+                            <input 
+                                type="time" 
+                                className="form-control" 
+                                name="clockTimeStart" 
+                                value={formData.clockTimeStart} 
+                                onChange={handleChange} 
+                                placeholder="Enter Starting Date*"
+                                required
+                              />
+                        </div>    
+                      </div>
+                      <div className="col-md-6">
+                        <div className="form-group mb-3">
+                          <div className="label-small">Clock Out Time*</div>
+                            <input 
+                                type="time" 
+                                className="form-control" 
+                                name="clockTimeEnd" 
+                                value={formData.clockTimeEnd} 
+                                onChange={handleChange} 
+                                placeholder="Enter Ending Date*"
+                                required
+                              />
+                        </div>    
+                      </div>
+                      <div className="col-md-12">
+                        <div className="form-group mb-3">
+                          <div className="label-small">Allow Clocking Project</div>
+                          <div className="form-check form-check-inline">
+                              <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="clockable"
+                                  id="clockable-yes"
+                                  value="true"
+                                  checked={formData.clockable === true}
+                                  onChange={handleChangeClocker}
+                              />
+                              <label className="form-check-label" htmlFor="clockable-yes">
+                                  Yes
+                              </label>
+                          </div>
+                          <div className="form-check form-check-inline">
+                              <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="clockable"
+                                  id="clockable-no"
+                                  value="false"
+                                  checked={formData.clockable === false}
+                                  onChange={handleChangeClocker}
+                              />
+                              <label className="form-check-label" htmlFor="clockable-no">
+                                  No
+                              </label>
+                          </div>
+                        </div>
+                      </div>
                       <div className="col-md-12">
                         <div className="form-group mb-3">
                           <div className="label-small">Description</div>
@@ -192,8 +280,7 @@ function ProjectScreen() {
                                 placeholder="Enter the description"
                               ></textarea>
                         </div>    
-                      </div>                    
-                     
+                      </div>                                        
                     </div>             
                        
                     <div className="form-group ">
@@ -205,7 +292,7 @@ function ProjectScreen() {
                   </form>
               </div>
           </ModalPopUp>
-          {
+            {
                 events.length > 0 && (
                     <table className="table table-striped">
                         <thead>

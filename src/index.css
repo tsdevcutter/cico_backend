@@ -477,3 +477,27 @@ button.btn.btn-stripe-activetrue {
 .rl-out {
   font-weight: bold;
 }
+.form-control.frm-time {
+  width: 75px;
+}
+.alphabet-items {
+  background: var(--second-color);
+  text-align: center;
+  display: block;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+  padding-top: 8px;
+  font-weight: 600;
+}
+.trash-action {
+  padding: 8px 5px 9px 5px;
+  text-align: center;
+  border: 1px solid gray;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.trash-action:hover {
+  background-color: #d8d8d8;
+}

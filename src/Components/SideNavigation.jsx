@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaCalendar, FaCogs, FaHome, FaPlane, FaUserAlt, FaFile } from "react-icons/fa";
+import { FaCalendar, FaCogs, FaHome, FaPlane, FaUserAlt, FaFile, FaCopy } from "react-icons/fa";
 import './layout.css';
 import { Link } from 'react-router-dom';
 
@@ -20,22 +20,40 @@ function SideNavigation({member}) {
             <span className="side-nav-text">Home</span>
           </Link>
         </li>
-        <li className="nav-item mb-2">
-          <Link to="/employees" className="nav-link ">           
-            <span className="side-nav-icon">
-              <FaUserAlt />
-            </span>
-             <span className="side-nav-text">Employees </span>
-          </Link>
-        </li>
-        <li className="nav-item mb-2">
-          <Link to="/projects" className="nav-link ">           
-            <span className="side-nav-icon">
-              <FaFile />
-            </span>
-            <span className="side-nav-text">Projects</span>
-          </Link>
-        </li>
+        {
+          member.role.includes('business') && (
+            <li className="nav-item mb-2">
+              <Link to="/employees" className="nav-link ">           
+                <span className="side-nav-icon">
+                  <FaUserAlt />
+                </span>
+                <span className="side-nav-text">Employees </span>
+              </Link>
+            </li>
+          )
+        }
+        {
+          member.role.includes('super') ? (
+            <li className="nav-item mb-2">
+              <Link to="/projects-list" className="nav-link ">           
+                <span className="side-nav-icon">
+                  <FaCopy />
+                </span>
+                <span className="side-nav-text">Projects</span>
+              </Link>
+            </li>
+          )
+          :
+           <li className="nav-item mb-2">
+              <Link to="/projects" className="nav-link ">           
+                <span className="side-nav-icon">
+                  <FaFile />
+                </span>
+                <span className="side-nav-text">Projects</span>
+              </Link>
+            </li>
+        }
+       
         <li className="nav-item mb-2">
           <Link to="/calendar" className="nav-link ">           
             <span className="side-nav-icon">

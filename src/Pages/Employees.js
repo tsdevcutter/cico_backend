@@ -10,7 +10,8 @@ import { logout } from '../reduxAuth/authSlice';
 function Employees() {
 
   const {user}                                                              = useSelector((state) => state.auth);
-  const [formData, setFormData]           = useState({
+
+  const [formData, setFormData]                                             = useState({
         firstName: '',
         lastName: '',
         idNumber: '',
@@ -22,12 +23,20 @@ function Employees() {
         role: 'business'
   });
 
+  const [titleQualification, setTitleQualification]                         = useState("");
+  const [statements, setStatements]                                         = useState([]);
+  const [statementText, setStatementText]                                   = useState();
+
   const [usersUpdate, setUsersUpdate]                                       = useState(0);
   const [processing, setProcessing]                                         = useState(false);
 
-  const [showModalAdd, setShowModalAdd]                                     = useState(false);
+  const [showModalAdd, setShowModalAdd]                                           = useState(false);
+  const [showModalQualificationFrame, setShowModalQualificationFrame]             = useState(false);
+  const [showModalQualificationView, setShowModalQualificationView ]              = useState(false);
 
-  const [employeeList, setEmployeeList]                                     = useState([]);
+  const [employeeList, setEmployeeList]                                      = useState([]);
+  const [listQualification, setListQualification]                            = useState([]);
+  const [listLoad, setListLoad]                                              = useState(false);
 
   const [page, setPage]                                               = useState(0);
   const [limit, setLimit]                                             = useState(30);
@@ -49,6 +58,11 @@ function Employees() {
   useEffect(() => {
       collectListOfUsers();
   }, [page, limit, usersUpdate])
+  useEffect(() => {
+    if(showModalQualificationView) {
+      collectListOfQualifications()
+    }
+  }, [showModalQualificationView])
 
   const collectListOfUsers = async () => {
     try
@@ -64,8 +78,6 @@ function Employees() {
 
     }catch(err){
       console.log(err);
-      console.log("((((())))))");
-      console.log(err.status);
 
       if(err.status === 403 && err.response.data === "Token is not valid!"){
           console.log("log user out");
@@ -74,6 +86,25 @@ function Employees() {
     }
   }
 
+  const collectListOfQualifications = async () => {
+      try
+      {
+      
+        setListLoad(true);
+        const results = await axios.get(CONSTANTS.API_URL +"users/qualification/criteria/v1/list/" + user.companynumber , {
+              headers: {
+                token: 'Bearer ' + user.accessToken,
+              },
+            });
+        
+       setListQualification(results.data);
+       setListLoad(false);
+    }catch(err){
+      console.log(err);
+      setListLoad(false);
+    }
+  }
+  
   const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -120,14 +151,67 @@ function Employees() {
     }
   };
 
+  const handleSubmitQualification = async (e) => {
+    e.preventDefault();
+
+    try{
+        const qualifyCriteria = {
+          companynumber: user.companynumber,
+          title: titleQualification,
+          statements: statements
+        }
+        setProcessing(true);
+
+        if(statements.length > 0 && titleQualification.length > 0) {
+            const results = await axios.post(CONSTANTS.API_URL +"users/qualificaton/criteria/v1/creation", qualifyCriteria, {
+                  headers: {
+                    token: 'Bearer ' + user.accessToken,
+                  },
+                });
+            
+              setProcessing(false);
+              toast.success(results.message.data);
+              setTitleQualification("");
+              setStatements([]);
+          }else {
+            toast.warning("Please add statements and title");
+          }
+            
+    }catch(err){
+      console.log(err);
+      toast.error("Something went wrong, please try again later.");
+      setProcessing(false);
+    }
+  }
+
+  const addStatement = () => {
+    setStatements([...statements, statementText]);
+    setStatementText("");
+  };
+
+  const removeStatement = (index) => {
+    const updatedStatements = statements.filter((_, i) => i !== index);
+    setStatements(updatedStatements);
+  };
+
   return (
     <div className="card-container">
       <div className="card">
           <div className="content-row">
-            <button className="btn btn-main" onClick={() => setShowModalAdd(true)}>
+            <button className="btn btn-main mg-r-3" onClick={() => setShowModalAdd(true)}>
               Add Employee
             </button>
+
+            <button className="btn btn-main mg-r-3" onClick={() => setShowModalQualificationFrame(true)}>
+              Add Qualification Framework
+            </button>
+
+            <button className="btn btn-main mg-r-3" onClick={() => setShowModalQualificationView(true)}>
+              View Qualifications
+            </button>
+
           </div>
+
           <ModalPopUp
               show={showModalAdd}
               handleClose={() => setShowModalAdd(false)}
@@ -249,11 +333,113 @@ function Employees() {
                   </form>
               </div>
           </ModalPopUp>
+          
+          <ModalPopUp
+              show={showModalQualificationFrame}
+              handleClose={() => setShowModalQualificationFrame(false)}
+              title="Add Employee"
+            >
+              <div className="body-modal-area">
+                  <form onSubmit={handleSubmitQualification}>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <div className="form-group mb-3">
+                          <div className="label-small">Title</div>
+                          <input 
+                                type="text" 
+                                className="form-control"  
+                                onChange={(e) => setTitleQualification(e.target.value)} 
+                                placeholder="Enter Title"
+                                required
+                              />
+                        </div>
+                      </div>
+                      <div className="col-md-12">
+                        <div className="form-group mb-3">
+                            <div className="label-small">Statement List</div>
+                            <div className="d-flex">
+                            
+                               <input
+                                      type="text"
+                                      className="form-control me-2"
+                                      placeholder="Required statement"
+                                      value={statementText}
+                                      onChange={(e) => setStatementText(e.target.value)}
+                                    />
+                               <button
+                                  type="button"
+                                  className="btn btn-outline-primary btn-sm mt-2"
+                                  onClick={addStatement}
+                                >
+                                  + Add
+                                </button>
+                            </div>
+                            <div className="statement-listing-options">
+                            {
+                                statements.map((statement, index) => (
+                                  <div key={index} className="state-box d-flex mb-2">
+                                      <div className="state">
+                                          {statement}
+                                      </div>                                    
+                                      <button
+                                        type="button"
+                                        className="btn btn-cl-1"
+                                        onClick={() => removeStatement(index)}
+                                      >
+                                        ×
+                                      </button>
+                                    
+                                  </div>
+                                ))
+                              }
+                                </div>                      
+                        </div>    
+                      </div>
+
+                    </div>
+                    <div className="form-group ">
+                      <button className="btn btn-main" disabled={processing}>
+                        Submit
+                      </button>
+                    </div>                    
+                  </form>
+              </div>
+          </ModalPopUp>
+
+          <ModalPopUp
+              show={showModalQualificationView}
+              handleClose={() => setShowModalQualificationView(false)}
+              title="View Qualification"
+            >
+              <div className="body-modal-area">
+                 {
+                  listLoad && <div className="">
+                    Loading...
+                  </div>
+                 }
+                 {
+                   listQualification.length > 0 && (
+                    <table className="table table-striped">
+                      <tbody>
+                        {
+                          listQualification.map((criteria, index) => {
+                            return <tr key={index}>
+                                      <td>{criteria.title}</td>
+                                      <td>{criteria.statements.length}</td>
+                                  </tr>
+                                })
+                        }
+                      </tbody>
+                    </table>
+                   )
+                 }
+              </div>
+          </ModalPopUp>
 
           <h2 className="text-xl font-bold mb-4">Employees</h2>
           {
             employeeList.length > 0 && (
-              <table className="table table-striped">
+              <table className="table table-striped table-hover">
                 <thead>
                   <tr>
                       <th>Employee No</th>
@@ -282,7 +468,7 @@ function Employees() {
             )
           }
           {/* Employee List */}       
-          <div className="flexme space-apart mt-4">
+          <div className="foot-pagination flexme space-apart mt-4">
               <div className="flex items-center justify-between mt-4">
                 <button
                     className="px-4 py-2 bg-gray-200 rounded"

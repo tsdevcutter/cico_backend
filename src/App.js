@@ -18,6 +18,7 @@ import ProjectScreen from "./Pages/ProjectScreen";
 import ProjectDetails from "./Pages/ProjectDetails";
 import SettingsScreen from "./Pages/SettingsScreen";
 import ProjectsAdminList from "./Pages/ProjectsAdminList";
+import FlightsAdminScreen from "./Pages/FlightsAdminScreen";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
                  <Route path="/employee/:id" element={<EmployeeDetails/>}/>
                  <Route path="/calendar" element={<CalendarSreen/>}/>  
                  <Route path="/flights" element={<FlightsScreen/>}/>  
+                 <Route path="/total-flights" element={<FlightsAdminScreen/>}/>  
                  <Route path="/projects" element={<ProjectScreen /> } />
                  <Route path="/projects-list" element={<ProjectsAdminList />} />
                  <Route path="/project-details/:id" element={<ProjectDetails /> } />

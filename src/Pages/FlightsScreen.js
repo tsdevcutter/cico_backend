@@ -5,7 +5,7 @@ import * as CONSTANTS from "../CONSTANTS";
 import axios from 'axios';
 import ModalPopUp from '../Components/modals/ModalPopUp';
 import { toast } from 'react-toastify';
-import { FaPlane } from "react-icons/fa";
+import { FaEdit, FaPlane } from "react-icons/fa";
 
 let typingTimeout;
 
@@ -23,7 +23,10 @@ function FlightsScreen() {
             arrival: '',
             status: 'Draft' 
         });
-    
+
+    const [showModalEditFlight, setShowModalEditFlight]                       = useState(false);
+    const [selectedEditTicket, setSelectedEditTicket]                         = useState(null);
+
     const [processing, setProcessing]                                         = useState(false);
     const [showModalAdd, setShowModalAdd]                                     = useState(false);
     const [ticketList, setTicketList]                                         = useState([]);
@@ -36,13 +39,29 @@ function FlightsScreen() {
     const [selectedUser, setSelectedUser]                                     = useState(null);
     const [searchTerm, setSearchTerm]                                         = useState("");
 
+    const [formEditFlight, setFormEditFlight]             = useState({
+      airline: "",
+      class: "",
+      departureDate: "",
+      departureTime: "",
+      departureLocation: "",
+      arrivalLocation: "",
+    });
+
+    const [editTicketId, setEditTicketId]                           = useState("");
+    const [activeEditTab, setActiveEditTab]                         = useState("edit-details");
+    //edit-details
+    //edit-status
+    //edit-user
+    const [flightUpdate, setFlightUpdate]                           = useState(0);
+
     useEffect(() => {
         collectListOfTickets();
-    },[])
+    },[flightUpdate])
 
     const collectListOfTickets = async () => {
         try{
-            const results = await axios.get(CONSTANTS.API_URL +"tickets/standard-list?page=" + page + "&limit=" + limit, {
+            const results = await axios.get(CONSTANTS.API_URL +"tickets/standard-list/v1?page=" + page + "&limit=" + limit + "&companynumber=" + user.companynumber, {
               headers: {
                 token: 'Bearer ' + user.accessToken,
               },
@@ -75,6 +94,7 @@ function FlightsScreen() {
                   formFormatData.append("arrival", formData.arrival);
                   formFormatData.append("empnumber", formData.status === "Published" ? selectedUser.empnumber : "");
                   formFormatData.append("status", formData.status === "Published" ? true : false);
+                  formFormatData.append('companynumber', user.companynumber);
 
                   setProcessing(true);
                   const result = await axios.post(`${CONSTANTS.API_URL}tickets/upload-ticket/v1/file`, formFormatData, {
@@ -84,7 +104,7 @@ function FlightsScreen() {
                         }
                       });
 
-                  //console.log(result.data);
+                 
                   toast.success("Ticket has been created");
                   setProcessing(false);
                    setFormData({
@@ -98,6 +118,7 @@ function FlightsScreen() {
                           status: 'Draft' 
                       });
                     setSelectedUser(null);
+                    setFlightUpdate(prev => prev + 1);
             }else {
               toast.warning("Only tickets that don't have a user are drafted. Published tickets must have a user.")
             }
@@ -157,6 +178,47 @@ function FlightsScreen() {
     return new Date(isoDate).toLocaleDateString('en-US', options).toUpperCase();
   };
 
+  const handleEditFlight = async (e) => {
+    e.preventDefault();
+    try{
+        setProcessing(true);
+        const updateTicket = {
+          "ticketId" : editTicketId,
+          "data" : {
+            "airline": formEditFlight.airline,
+            "class": formEditFlight.class,
+            "date": formEditFlight.departureDate,
+            "time": formEditFlight.departureTime,
+            "departure": formEditFlight.departureLocation,
+            "arrival" : formEditFlight.arrivalLocation
+          }
+        }
+      
+        const results = await axios.put(CONSTANTS.API_URL +"tickets/edit/flight/v1/" , updateTicket, {
+            headers: {
+              token: "Bearer " + user.accessToken,
+            },
+          }
+        );
+        setFlightUpdate(prev => prev + 1);
+        setProcessing(false);
+        toast.success(results.data.message);
+    }catch(err){
+      toast.error("Something went wrong, please try again later.");
+      setProcessing(false);
+    }
+  }
+
+  const editDateFormat = (isoDateString) =>{
+      const date = new Date(isoDateString);
+
+      // Extract components (Note: getMonth() returns 0-11, so we add 1)
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Pad with '0' if single digit
+      const day = String(date.getDate()).padStart(2, '0'); // Pad with '0' if single digit
+
+      return`${year}-${month}-${day}`;
+  }
   return (
     <div className="card-container">
        <div className="card">
@@ -352,7 +414,163 @@ function FlightsScreen() {
                   </form>
               </div>
           </ModalPopUp>
+          
+          <ModalPopUp
+              show={showModalEditFlight}
+              handleClose={() => setShowModalEditFlight(false)}
+              title="Edit Project"
+            >
+              <div className="body-modal-area">
+                  <div className="tab-container">
+                    <ul className="nav">
+                          <li className="nav-item">
+                            <button
+                              className={`nav-link ${activeEditTab === 'edit-details' ? 'active' : ''}`} 
+                              onClick={() => setActiveEditTab('edit-details')}>
+                              Edit Details
+                            </button>
+                          </li>
+                          <li className="nav-item">
+                            <button
+                              className={`nav-link ${activeEditTab === 'edit-status' ? 'active' : ''}`}
+                              onClick={() => setActiveEditTab('edit-status')}>
+                              Edit Status
+                            </button>
+                          </li>
+                          <li className="nav-item">
+                            <button
+                              className={`nav-link ${activeEditTab === 'edit-user' ? 'active' : ''}`}
+                              onClick={() => setActiveEditTab('edit-user')}>
+                              Edit User
+                            </button>
+                          </li>
+                        </ul>
+                     {
+                       activeEditTab === "edit-details" && (
+                        <div className="tab-box-item">
+                          <form onSubmit={handleEditFlight}>
+                            <div className="row">
+                              <div className="col-md-6">
+                                <div className="form-group mb-3">
+                                  <div className="label-small">Airline*</div>
+                                  <input
+                                      type="text"
+                                      className="form-control"
+                                      value={formEditFlight.airline}
+                                      onChange={e =>
+                                        setFormEditFlight({ ...formEditFlight, airline: e.target.value })
+                                      }
+                                      required
+                                    />
+                                </div>
+                              </div>
+                              <div className="col-md-6">
+                                <div className="form-group mb-3">
+                                  <div className="label-small">Class</div>
+                                  <select
+                                      className="form-control"
+                                      value={formEditFlight.class}
+                                      onChange={e =>
+                                        setFormEditFlight({ ...formEditFlight, class: e.target.value })
+                                      }
+                                    >
+                                      <option value="Economic">Economic</option>
+                                      <option value="Premium Economic">Premium Economic</option>
+                                      <option value="Business">Business</option>
+                                      <option value="First">First</option>
+                                    </select>
+                                
+                                </div>
+                              </div>
+                            
+                              <div className="col-md-6">
+                                <div className="form-group mb-3">
+                                  <div className="label-small">Departure Date*</div>
+                                  <input
+                                        type="date"
+                                        className="form-control"
+                                        value={formEditFlight.departureDate}
+                                        onChange={e =>
+                                          setFormEditFlight({ ...formEditFlight, departureDate: e.target.value })
+                                        }
+                                      required
+                                    /> 
 
+                                </div>    
+                              </div>
+                              <div className="col-md-6">
+                                <div className="form-group mb-3">
+                                  <div className="label-small">Departure Time*</div>
+                                  <input
+                                      type="time"
+                                      className="form-control"
+                                      value={formEditFlight.departureTime}
+                                      onChange={e =>
+                                        setFormEditFlight({ ...formEditFlight, departureTime: e.target.value })
+                                      }
+                                      required
+                                    />      
+
+                                </div>    
+                              </div>
+                              <div className="col-md-6">
+                                <div className="form-group mb-3">
+                                  <div className="label-small">Departure Location*</div>
+                                  <input
+                                      type="text"
+                                      className="form-control"
+                                      value={formEditFlight.departureLocation}
+                                      onChange={e =>
+                                        setFormEditFlight({ ...formEditFlight, departureLocation: e.target.value })
+                                      }
+                                      required
+                                    />
+
+                                </div>    
+                              </div>
+                              <div className="col-md-6">
+                                <div className="form-group mb-3">
+                                  <div className="label-small">Arrival Location*</div>
+                                  <input
+                                        type="text"
+                                        className="form-control"
+                                        value={formEditFlight.arrivalLocation}
+                                        onChange={e =>
+                                          setFormEditFlight({ ...formEditFlight, arrivalLocation: e.target.value })
+                                        }
+                                        required
+                                      />    
+
+                                </div>    
+                              </div>                                                           
+                            </div>             
+                              
+                            <div className="form-group ">
+                              <button className="btn btn-main" disabled={processing}>
+                                Submit
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                       )
+                     }
+                      
+                    {
+                        activeEditTab == "edit-status" && (
+                        <div className="tab-box-item">X status</div>
+                        )
+                    }
+                    
+                    {
+                      activeEditTab == "edit-user" && (
+                        <div className="tab-box-item">X user</div>
+                        )
+                    }
+                    
+
+                  </div>
+              </div>
+          </ModalPopUp>
           <h2 className="text-xl font-bold mb-4">Flights</h2>
           {
             ticketList.length > 0 && (
@@ -361,7 +579,29 @@ function FlightsScreen() {
                   {
                    ticketList.map((ticket, index) => (
                       <div className="ticket-line" key={index}>
-                        <div className="ticket-date">{formatDate(ticket.date)}</div>
+                        <div className="ticket-head">
+                          <div className="ticket-date">{formatDate(ticket.date)}</div>
+                          <button 
+                            className="btn btn-small btn-float-right"
+                            onClick={() => {
+                                    setSelectedEditTicket(ticket);
+                                    setFormEditFlight({
+                                      airline: ticket.airline,
+                                      class: ticket.class,
+                                      departureDate: editDateFormat(ticket.date),
+                                      departureTime: ticket.time,
+                                      departureLocation: ticket.depature,
+                                      arrivalLocation: ticket.arrival,
+                                    });
+                                  
+                                    setEditTicketId(ticket._id);
+                                    setShowModalEditFlight(true);
+                                    
+                                  }
+                            }>
+                              <FaEdit />
+                          </button>
+                        </div>
                         <div className="ticket-row">
                             <div className="block-a">
                               <p>{ticket.airline}</p>
@@ -377,11 +617,14 @@ function FlightsScreen() {
                                 <div className="bottom label-copy-g">
                                   {ticket.depature}
                                 </div>
+                                <div className="tiny-label">FROM</div>
                               </div>
                             </div>
                             <div className="block-c">
-                              <div className="plane-item">
-                                <FaPlane />
+                              <div className="plein-area">
+                                <div className="plane-item">
+                                  <FaPlane />
+                                </div>
                               </div>
                             </div>
                             <div className="block-d">
@@ -391,6 +634,7 @@ function FlightsScreen() {
                                   <div className="bottom label-copy-g">
                                     {ticket.arrival}
                                   </div>
+                                  <div className="tiny-label">TO</div>
                                 </div>
                               </div>
                             </div>
@@ -406,7 +650,7 @@ function FlightsScreen() {
             )
           }
           {/* Tickets List */}       
-          <div className="flexme space-apart mt-4">
+          <div className="foot-pagination flexme space-apart mt-4">
               <div className="flex items-center justify-between mt-4">
                 <button
                     className="px-4 py-2 bg-gray-200 rounded"

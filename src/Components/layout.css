@@ -39,10 +39,14 @@ span.side-nav-icon {
   justify-content: end;
   padding: 4px;
 }
+
 a.nav-link-pact {
     display: block;
     position: relative;
+    color: var(--accent-color);
+    margin-right: 10px;
 }
+
 .user-image {
     margin-right: 20px;
     background: #f1f1f1;
@@ -52,4 +56,12 @@ a.nav-link-pact {
 }
 .profile-quick {
   display: flex;
+}
+.box-head-logo {
+    position: relative;
+    text-align: center;
+}
+img.side-bar-head {
+    width: 100px;
+    margin: auto;
 }

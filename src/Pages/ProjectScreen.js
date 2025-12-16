@@ -82,8 +82,6 @@ function ProjectScreen() {
         }
     }
 
-
-
     const collectCurrentUserProject = async () => {
             
         try{

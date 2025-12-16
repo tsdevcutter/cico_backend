@@ -1,90 +1,132 @@
 import React from 'react'
 import { FaCalendar, FaCogs, FaHome, FaPlane, FaUserAlt, FaFile, FaCopy } from "react-icons/fa";
 import './layout.css';
-import { Link } from 'react-router-dom';
+import logo from '../assets/halflogo.png';
+import { NavLink } from 'react-router-dom';
 
 function SideNavigation({member}) {
-     ///console.log("SideNavigation"  );
-    //console.log(member);
+
   return (
     <div className="navigation-side">
-      <div className="center-heading fs-5 fw-bold mb-4 text-center">
-         Side Title
-      </div>
-      <ul className="menu-list nav flex-column">
-         <li className="nav-item mb-2">
-          <Link to="/" className="nav-link ">           
-            <span className="side-nav-icon">
-              <FaHome />
-            </span>
-            <span className="side-nav-text">Home</span>
-          </Link>
-        </li>
-        {
-          member.role.includes('business') && (
+        <div className="box-head-logo">
+          <img src={logo} className="side-bar-head" />
+        </div>
+        <div className="center-heading fs-5 fw-bold mb-4 text-center">
+          CICO
+        </div>
+          <ul className="menu-list nav flex-column">
             <li className="nav-item mb-2">
-              <Link to="/employees" className="nav-link ">           
+              {/* Use NavLink and the 'className' function to add 'active' class */}
+              <NavLink 
+              to="/" 
+              className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+              end 
+            >
+              <span className="side-nav-icon">
+              <FaHome />
+              </span>
+              <span className="side-nav-text">Home</span>
+            </NavLink>
+            </li>
+            {
+            member.role.includes('business') && (
+              <li className="nav-item mb-2">
+              <NavLink 
+                to="/employees" 
+                className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+              >      
                 <span className="side-nav-icon">
-                  <FaUserAlt />
+                <FaUserAlt />
                 </span>
                 <span className="side-nav-text">Employees </span>
-              </Link>
-            </li>
-          )
-        }
-        {
-          member.role.includes('super') ? (
+              </NavLink>
+              </li>
+            )
+            }
+            {
+            member.role.includes('super') ? (
+              <li className="nav-item mb-2">
+              <NavLink 
+                to="/projects-list" 
+                className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+              >      
+                <span className="side-nav-icon">
+                <FaCopy />
+                </span>
+                <span className="side-nav-text">Projects</span>
+              </NavLink>
+              </li>
+            )
+            :
             <li className="nav-item mb-2">
-              <Link to="/projects-list" className="nav-link ">           
+              <NavLink 
+                to="/projects" 
+                className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+              >      
                 <span className="side-nav-icon">
-                  <FaCopy />
+                <FaFile />
                 </span>
                 <span className="side-nav-text">Projects</span>
-              </Link>
-            </li>
-          )
-          :
-           <li className="nav-item mb-2">
-              <Link to="/projects" className="nav-link ">           
-                <span className="side-nav-icon">
-                  <FaFile />
-                </span>
-                <span className="side-nav-text">Projects</span>
-              </Link>
-            </li>
-        }
-       
-        <li className="nav-item mb-2">
-          <Link to="/calendar" className="nav-link ">           
-            <span className="side-nav-icon">
+              </NavLink>
+              </li>
+            }
+          
+            <li className="nav-item mb-2">
+            <NavLink 
+              to="/calendar" 
+              className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+            >      
+              <span className="side-nav-icon">
               <FaCalendar />
-            </span>
-            <span className="side-nav-text">Calendar</span>
-          </Link>
-        </li>
-        <li className="nav-item mb-2">
-          <Link to="/flights" className="nav-link ">           
-            <span className="side-nav-icon">
-              <FaPlane />
-            </span>
-            <span className="side-nav-text">Flights</span>
-          </Link>
-        </li>
-        {
-          member.role.includes('super') && (
-            <li className="nav-item mb-2">
-              <Link to="/settings" className="nav-link ">           
+              </span>
+              <span className="side-nav-text">Calendar</span>
+            </NavLink>
+            </li>
+            
+            {
+            member.role.includes('super') ? (
+              <li className="nav-item mb-2">
+              <NavLink 
+                to="/total-flights" 
+                className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+              >      
                 <span className="side-nav-icon">
-                  <FaCogs />
+                <FaPlane />
+                </span>
+                <span className="side-nav-text">Total Flights</span>
+              </NavLink>
+              </li>
+            )
+            :
+              <li className="nav-item mb-2">
+              <NavLink 
+                to="/flights" 
+                className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+              >      
+                <span className="side-nav-icon">
+                <FaPlane />
+                </span>
+                <span className="side-nav-text">Flights</span>
+              </NavLink>
+              </li>
+            }
+            {
+            member.role.includes('super') && (
+              <li className="nav-item mb-2">
+              <NavLink 
+                to="/settings" 
+                className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+              >  
+                <span className="side-nav-icon">
+                <FaCogs />
                 </span>
                 <span className="side-nav-text">Settings</span>
-              </Link>
-            </li>
-          )
-        }
-        
-      </ul>
-    </div>
+              </NavLink>
+              </li>
+            )
+            }
+          </ul>
+  </div>
   )
 }
 

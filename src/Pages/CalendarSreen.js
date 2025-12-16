@@ -49,8 +49,7 @@ function CalendarSreen() {
                 token: 'Bearer ' + user.accessToken,
               },
             });
-        
-            console.log(results.data)
+
             setProjectList(results.data);
             if(results.data.length > 0){
                 
@@ -71,7 +70,7 @@ function CalendarSreen() {
                 token: 'Bearer ' + user.accessToken,
               },
             });
-            console.log(results.data);
+
             setCULoading(false);
             setCompanyUsers(results.data);
       }catch(err){
@@ -136,15 +135,22 @@ function CalendarSreen() {
    };
 
   const handleDateSelect = (selectInfo) => {
-        
-      const filteredProjects = newProjects.filter(event => event.startDate === selectInfo.startStr);
 
-      if(filteredProjects.length > 0){
-          setShowProModalAdd(true);
-          const current = projectList.filter(selected => selected._id === filteredProjects[0].id);
-       
-        setSelectedEvent(current[0]);
-    } 
+       if(selectInfo.event){
+         /////////////////
+            const filteredProjects = newProjects.filter(event => event.id === selectInfo.event._def.publicId);
+
+            if(filteredProjects.length > 0){
+                  setShowProModalAdd(true);
+                  const current = projectList.filter(selected => selected._id === filteredProjects[0].id);
+              
+                setSelectedEvent(current[0]);
+            } 
+         ////////////////////
+       }
+     
+
+
   
   };
 
@@ -157,6 +163,7 @@ function CalendarSreen() {
       
       return `#${r}${g}${b}`;
   }
+
   function formatDate(dateString) {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -317,18 +324,18 @@ function CalendarSreen() {
                         companyUsers.length > 0 && (
                           <div className="scroll-list">
                             {
-                              companyUsers.map((person, index) => {
-                                const isIncluded = selectedEvent.users?.includes(person.empnumber);
+                              companyUsers
+                                .filter(person => selectedEvent.users?.includes(person.empnumber))
+                                .map((person, index) => {
                                 return <div className="item-person" key={index}>
-                                            <button 
-                                              className={`btn btn-project-standard ${isIncluded ? "btn-included" : ""}`}
-                                              onClick={() => handleTogglePersonProject(person.empnumber)}>
+                                            <div 
+                                              className="btn-project-standard">
                                               <strong>{person.empnumber}</strong>  
                                               <div className="person-info">
                                                 <span>{person.name}</span>
                                                  <span>{person.surname}</span>
                                               </div>
-                                            </button>
+                                            </div>
                                         </div>
                               })
                             }

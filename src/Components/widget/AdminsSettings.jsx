@@ -87,6 +87,7 @@ function AdminsSettings({user}) {
             }
         </button>
       </div>
+      
       {
         addUser ? 
         <div className="card-block">

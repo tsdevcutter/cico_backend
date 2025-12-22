@@ -368,8 +368,8 @@ function ProjectDetails() {
                       )
                      }
                    </div>
-                   <div className="inf-details">
-                    aaaa
+                   <div className="inf-details p-3">
+                  
                    </div>
                  </div>
               </div>
@@ -380,7 +380,8 @@ function ProjectDetails() {
                           <div className="barrier-content">
                             <h4>{currentProject.title}</h4>
                                 <div className="section-part">
-                                    <h5>General</h5>
+                                 
+                                    <h6 className="coach">General</h6>
                                     <div className="row">
                                         <div className="col-md-7">
                                             <div className="details-spot">
@@ -407,7 +408,8 @@ function ProjectDetails() {
                                     </div>
                                 </div>
                                 <div className="section-part">
-                                    <h5>Users</h5>
+                                   
+                                    <h6 className="coach">User</h6>
                                     <div className="row">
                                         <div className="col-md-8">
                                           <div className="user-modal-list full-campus">
@@ -515,7 +517,8 @@ function ProjectDetails() {
                                 </div>
                                 <div className="section-part">
                                   <div className="row">
-                                    <h5>Periods</h5>
+                                   
+                                    <h6 className="coach">Periods</h6>
                                     <div className="period-container">
                                       <h2>Project Periods</h2>
                                       {periodDays.length === 0 ? (

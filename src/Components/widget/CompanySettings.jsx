@@ -64,7 +64,7 @@ function CompanySettings({user}) {
                                     <td>{admin.email}</td>  
                                     <td>{admin.empnumber}</td>
                                     <td>{admin.companynumber}</td>
-                                    <td>{admin.companyInfo.title}</td>
+                                    <td>{admin?.companyInfo?.title}</td>
                                     <td>{
                                       admin.companyInfo.approve ? 
                                       <div className="alert alert-success status-pt">On</div> : 

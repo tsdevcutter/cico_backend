@@ -23,7 +23,7 @@ function ProjectsAdminList() {
                         },
                     });
 
-            console.log(results);
+            //console.log(results);
             setEvents(results.data);
         }catch(err){
             console.log(err);
@@ -48,7 +48,8 @@ function ProjectsAdminList() {
 
   return (
     <div className="card-container">
-      <div className="card">ProjectsAdminList
+      <div className="card">
+        <h2 className="text-xl font-bold mb-4">Project Admin</h2>
     
          {
                 events.length > 0 && (

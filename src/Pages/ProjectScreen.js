@@ -21,8 +21,8 @@ function ProjectScreen() {
             description: '',
             startDate: '',
             endDate: '',
-            clockTimeStart: '',
-            clockTimeEnd: '',
+            clockTimeStart: '08:00',
+            clockTimeEnd: '17:00',
             clockable: true,
             address: ''
         });

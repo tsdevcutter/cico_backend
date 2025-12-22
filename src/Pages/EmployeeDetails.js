@@ -20,6 +20,8 @@ function EmployeeDetails() {
   const [uploadCount, setUploadSCount]                                = useState(0);
 
   const [listQualification, setListQualification]                     = useState([]);
+  const [addedQualifications, setAddedQualificaitons]                 = useState([]);
+
   const [listLoad, setListLoad]                                       = useState(false);
   const [isOpenCriteria, setIsOpenCriteria]                           = useState(false);
 
@@ -27,11 +29,12 @@ function EmployeeDetails() {
 
   useEffect(() => {
     collectCurrentUser();
-    collectListOfQualifications();
+    
   },[])
 
   useEffect(() => {
     if(currentUser){
+      collectListOfQualifications();
       collectListOfDocuments();
     }    
   },[uploadCount, currentUser])
@@ -60,9 +63,16 @@ function EmployeeDetails() {
                 token: 'Bearer ' + user.accessToken,
               },
             });
-        
+       
        setListQualification(results.data);
       
+       //////
+       setAddedQualificaitons(
+          results.data
+            .filter(item => item.userIds.includes(currentUser._id))
+            .map(item => item.title)
+        );
+
     }catch(err){
       console.log(err);
       setListLoad(false);
@@ -143,12 +153,21 @@ function EmployeeDetails() {
           });
 
         toast.success(result.data.message);
-
+        setUploadSCount(prev => prev + 1);
     }catch(err){
       console.log(err);
       toast.error("Something went wrong, please try again later.")
     }
   }
+
+  const getQualificationTitle = (record) => {
+  
+  const partOne = listQualification.find(q => q.userIds.includes(record.userId));
+   
+    const match = partOne?.recordIds.includes(record._id);
+
+    return match ? partOne.title : "";    
+  };
 
   return (
     <div className="card-container">
@@ -198,10 +217,40 @@ function EmployeeDetails() {
                   </div>
                   <div className="documentation">
                     <div className="row docu-records">
+                    
+                        {
+                          addedQualifications.length > 0 && (
+                            <div className="col-md-12">
+                               <div className="card mb-3">
+                                 <div className="card-body ">
+                                   <h6 className="coach">User Qualification Setup</h6>
+                                   <ul className="mt-2 nostyle pnone">
+                                      {
+                                          addedQualifications.map((addQuali, index) => {
+                                            return <li key={index} className="p-2 " >
+                                                    <div className="flexme space-apart">
+                                                        <div className="tx">
+                                                          {addQuali}
+                                                        </div>
+                                                        <div className="status-yellow">
+                                                          required
+                                                        </div>
+                                                    </div>
+                                                     
+                                                  </li>
+                                          })
+                                        }
+                                   </ul>
+                                 </div>
+                               </div>
+                            </div>
+                          )
+                        }
+                      
                       <div className="col-md-7">
                         <div className="card">
                           <div className="record-list">
-                            <h6>Qualification Documents</h6>
+                            <h6 className="coach">Qualification Documents</h6>
                             {
                               recordList.length > 0 && (
                                 <table className="table table-striped">
@@ -223,17 +272,22 @@ function EmployeeDetails() {
                                                         Download {rec.title}                                                      
                                                     </a>
                                                   </td>   
-                                                  <td>
-                                                    {
+                                                  <td>                                                    
+                                                      {
                                                         currentUser.assignedQualification.some
                                                         (
                                                           qualification => 
                                                           {
                                                             return qualification.recordId === rec._id
                                                           }
-                                                        ) && <strong>Assigned</strong>
-                                                      }
+                                                        ) && <div className="status-green text-center">Assigned</div>
+                                                      }                                                  
                                                   </td>  
+                                                  <td>
+                                                     {
+                                                     getQualificationTitle(rec)
+                                                     }
+                                                  </td>
                                               </tr>
                                       })
                                     }
@@ -246,14 +300,17 @@ function EmployeeDetails() {
                       </div>
                       <div className="col-md-5">
                         <div className="record-upload">
+                          <h6 className="coach">Upload Documents.</h6>
                            <form onSubmit={handleSubmitDocument}>
                              <div className="form-group">
                                 <p>Select user records</p>
+                                
                               <input 
                                 type="file" 
                                 onChange={handleFileChange} 
                                 accept="application/pdf" 
                                 ref={fileInputRef}
+                                className="form-control"
                                 multiple 
                                 required/>
                              </div>
@@ -265,7 +322,7 @@ function EmployeeDetails() {
                            </form>                                            
                         </div>
                         <div className="summary-details mt-5">
-                          <h6>Add criteria to user.</h6>
+                          <h6 className="coach">Add criteria to user.</h6>
                            {
                               listQualification.length > 0 && (
                                 <table className="table table-striped">

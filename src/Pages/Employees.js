@@ -58,6 +58,7 @@ function Employees() {
   useEffect(() => {
       collectListOfUsers();
   }, [page, limit, usersUpdate])
+  
   useEffect(() => {
     if(showModalQualificationView) {
       collectListOfQualifications()
@@ -442,6 +443,7 @@ function Employees() {
               <table className="table table-striped table-hover">
                 <thead>
                   <tr>
+                      <th>NO</th>
                       <th>Employee No</th>
                       <th>Name</th>
                       <th>Surname</th>
@@ -454,6 +456,7 @@ function Employees() {
                   {
                    employeeList.map((emp, index) => (
                       <tr key={index}>
+                        <td>{index + 1}</td>
                         <td>{emp.empnumber}</td>
                         <td>{emp.name}</td>
                         <td>{emp.surname}</td>
@@ -467,41 +470,47 @@ function Employees() {
               </table>
             )
           }
-          {/* Employee List */}       
-          <div className="foot-pagination flexme space-apart mt-4">
-              <div className="flex items-center justify-between mt-4">
-                <button
-                    className="px-4 py-2 bg-gray-200 rounded"
-                    disabled={page === 0}
-                    onClick={() => setPage(prev => Math.max(prev - 1, 0))}
-                  >
-                  Previous
-                </button>
+           {/* Employee List */}   
+          {
+            employeeList.length > 30 && (
+               <div className="foot-pagination flexme space-apart mt-4">
+                  <div className="flex items-center justify-between mt-4">
+                    <button
+                        className="px-4 py-2 bg-gray-200 rounded"
+                        disabled={page === 0}
+                        onClick={() => setPage(prev => Math.max(prev - 1, 0))}
+                      >
+                      Previous
+                    </button>
 
-                <span>Page {page + 1}</span>
+                    <span>Page {page + 1}</span>
 
-                <button
-                    className="px-4 py-2 bg-gray-200 rounded"
-                    onClick={() => setPage(prev => prev + 1)}
-                  >
-                    Next
-                </button>
-              </div>        
-              <div className="mt-3">
-                <label htmlFor="limit" className="mr-2">Items per page:</label>
-                <select
-                  id="limit"
-                  value={limit}
-                  onChange={(e) => setLimit(Number(e.target.value))}
-                  className="border px-2 py-1 rounded"
-                >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={30}>30</option>
-                  <option value={50}>50</option>
-                </select>
+                    <button
+                        className="px-4 py-2 bg-gray-200 rounded"
+                        onClick={() => setPage(prev => prev + 1)}
+                      >
+                        Next
+                    </button>
+                  </div>        
+                  <div className="mt-3">
+                    <label htmlFor="limit" className="mr-2">Items per page:</label>
+                    <select
+                      id="limit"
+                      value={limit}
+                      onChange={(e) => setLimit(Number(e.target.value))}
+                      className="border px-2 py-1 rounded"
+                    >
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={30}>30</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
               </div>
-          </div>
+            )
+          }
+             
+         
         
       </div>
     </div>

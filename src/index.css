@@ -207,6 +207,14 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 100000;
 }
 
+h6.coach {
+  background: #e37995;
+  padding: 11px;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+}
+
 .content-row {
   padding: 15px 5px;
 }
@@ -424,7 +432,26 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--light-gray-color);
   padding: 10px;
 }
-
+.nostyle {
+  list-style: none;
+}
+.status-yellow {
+  background: #ffbf0066;
+  padding: 4px 15px;
+  font-size: 12px;
+  color: #a17b09;
+  border-bottom: 5px;
+}
+.status-green {
+  background: #00ff0066;
+  padding: 4px 15px;
+  font-size: 12px;
+  color: #077e34;
+  border-bottom: 5px;
+}
+.pnone {
+  padding: 0px;
+}
 .nav-sides-set {
     width: 18%;
     background-color: var(--second-color);

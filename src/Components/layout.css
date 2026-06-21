@@ -8,7 +8,9 @@
   box-shadow: 2px 0 10px var(--shadow-color);
   transition: all 0.3s ease;
   border: 0px;
-  position: relative;
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 .main-dash-content {
   background-color: var(--second-color);

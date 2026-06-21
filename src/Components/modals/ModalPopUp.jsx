@@ -1,9 +1,9 @@
 import React from 'react'
 
-function ModalPopUp({show, handleClose, title, children }) {
+function ModalPopUp({show, handleClose, title, wrapclass, children }) {
   return (
       <div className={`modal fade ${show ? "show d-block" : ""}`} tabIndex="-1">
-      <div className="modal-dialog modal-dialog-centered">
+      <div className={"modal-dialog modal-dialog-centered " + wrapclass}>
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">{title}</h5>
